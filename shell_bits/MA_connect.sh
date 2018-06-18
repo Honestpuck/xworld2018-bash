@@ -14,6 +14,10 @@ set -e
 set -o pipefail
 
 # do we want debug output
+# check for flag
+if [ "$#" -gt 0 ] && [ "$1" == '-D' ] ; then
+    DEBUG="True"
+fi
 # DEBUG="True"
 
 # discover device name of Wi-Fi network
@@ -32,7 +36,7 @@ done < <(networksetup -listnetworkserviceorder | grep "Hardware Port" | \
     grep -v "Wi-Fi" | sed 's#([^:]*:\ \([^,]*\),.*#\1#')
 # do the promote
 if [ "$DEBUG" == "True" ] ; then
-    echo "Set order to: ${service_list[@]}"
+    echo "Set order to: " $(printf "'%s' " "${service_list[@]}")
 fi
 networksetup -ordernetworkservices Wi-Fi "${service_list[@]}"
 if [ "$DEBUG" == "True" ] ; then
